@@ -40,6 +40,8 @@ class HomeController extends AbstractController
             'Cum domus tolerare, omnes resistentiaes fallere neuter, ferox contencioes.',
         ];
 
+        dump($slug, $this);
+
         return $this->render('article/read.html.twig', [
             'title' => ucwords(str_replace('-', ' ', $slug)),
             'comments' => $comments,
