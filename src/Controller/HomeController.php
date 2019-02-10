@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HomeController
+class HomeController extends AbstractController
 {
     /**
      * @Route("/")
@@ -32,9 +33,8 @@ class HomeController
      */
     public function read($slug)
     {
-        return new Response(sprintf(
-            'Article: "%s" is coming very soon',
-            $slug
-        ));
+        return $this->render('article/read.html.twig', [
+            'title' => ucwords(str_replace('-', ' ', $slug)),
+        ]);
     }
 }
