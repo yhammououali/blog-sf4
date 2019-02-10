@@ -33,8 +33,16 @@ class HomeController extends AbstractController
      */
     public function read($slug)
     {
+        $comments = [
+            'Deus de germanus solem, dignus hippotoxota!',
+            'Magnum, camerarius caniss etiam magicae de superbus, fortis hilotae.',
+            'Est varius guttus, cesaris.',
+            'Cum domus tolerare, omnes resistentiaes fallere neuter, ferox contencioes.',
+        ];
+
         return $this->render('article/read.html.twig', [
             'title' => ucwords(str_replace('-', ' ', $slug)),
+            'comments' => $comments,
         ]);
     }
 }
