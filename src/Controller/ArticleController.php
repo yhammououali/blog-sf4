@@ -3,13 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Form\ArticleType;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -54,14 +50,16 @@ class ArticleController extends AbstractController
     {
         $article = new Article();
 
-        $form = $this->createFormBuilder($article)
-            ->add('title', TextType::class)
-            ->add('content', TextareaType::class)
-            ->add('author', TextType::class, [
-                'required' => true,
-            ])
-            ->add('submit', SubmitType::class)
-            ->getForm();
+//        $form = $this->createFormBuilder($article)
+//            ->add('title', TextType::class)
+//            ->add('content', TextareaType::class)
+//            ->add('author', TextType::class, [
+//                'required' => true,
+//            ])
+//            ->add('submit', SubmitType::class)
+//            ->getForm();
+
+        $form = $this->createForm(ArticleType::class, $article);
 
         $form->handleRequest($request);
 
