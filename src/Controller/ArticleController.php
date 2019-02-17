@@ -2,7 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArticleController extends AbstractController
@@ -20,7 +28,7 @@ class ArticleController extends AbstractController
      *
      * Doc: https://symfony.com/doc/current/routing.html#adding-wildcard-requirements
      *
-     * @Route("/article/{slug}")
+     * @Route("/article/read/{slug}")
      */
     public function read($slug)
     {
@@ -42,8 +50,31 @@ class ArticleController extends AbstractController
     /**
      * @Route("/article/create", name="article_create")
      */
-    public function create()
+    public function create(Request $request, ObjectManager $objectManager)
     {
-        
+        $article = new Article();
+
+        $form = $this->createFormBuilder($article)
+            ->add('title', TextType::class)
+            ->add('content', TextareaType::class)
+            ->add('author', TextType::class, [
+                'required' => true,
+            ])
+            ->add('submit', SubmitType::class)
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //dump($form->getData());
+            //die;
+
+            $objectManager->persist($article);
+            $objectManager->flush();
+        }
+
+        return $this->render('article/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
