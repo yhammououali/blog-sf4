@@ -24,7 +24,7 @@ class ArticleController extends AbstractController
      *
      * Doc: https://symfony.com/doc/current/routing.html#adding-wildcard-requirements
      *
-     * @Route("/article/read/{slug}")
+     * @Route("/article/read/{slug}", name="article_read")
      */
     public function read($slug)
     {
@@ -69,6 +69,10 @@ class ArticleController extends AbstractController
 
             $objectManager->persist($article);
             $objectManager->flush();
+
+            return $this->redirectToRoute('article_read', [
+                'slug' => $article->getTitle(),
+            ]);
         }
 
         return $this->render('article/create.html.twig', [
