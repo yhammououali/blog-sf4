@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Form\ArticleType;
+use App\Repository\ArticleRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,6 +21,11 @@ class ArticleController extends AbstractController
 //        return new Response('Article is coming very soon!');
 //    }
 
+    public function list(ObjectManager $objectManager)
+    {
+        $articles = $objectManager->getRepository(Article::class)->findAll();
+    }
+
     /**
      * Using wildcard
      *
@@ -26,7 +33,7 @@ class ArticleController extends AbstractController
      *
      * @Route("/article/read/{slug}", name="article_read")
      */
-    public function read($slug)
+    public function read($slug, ObjectManager $objectManager)
     {
         $comments = [
             'Deus de germanus solem, dignus hippotoxota!',
@@ -35,10 +42,12 @@ class ArticleController extends AbstractController
             'Cum domus tolerare, omnes resistentiaes fallere neuter, ferox contencioes.',
         ];
 
+        $article = $objectManager->getRepository(Article::class)->findOneBy(['title' => $slug]);
+
         //dump($slug, $this);
 
         return $this->render('article/read.html.twig', [
-            'title' => ucwords(str_replace('-', ' ', $slug)),
+            'article' => $article,
             'comments' => $comments,
         ]);
     }
@@ -68,6 +77,29 @@ class ArticleController extends AbstractController
             //die;
 
             $objectManager->persist($article);
+            $objectManager->flush();
+
+            return $this->redirectToRoute('article_read', [
+                'slug' => $article->getTitle(),
+            ]);
+        }
+
+        return $this->render('article/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/article/update/{id}", name="article_update")
+     * @ParamConverter("article", class="App\Entity\Article")
+     */
+    public function update(Request $request, Article $article, ObjectManager $objectManager)
+    {
+        $form = $this->createForm(ArticleType::class, $article);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $objectManager->flush();
 
             return $this->redirectToRoute('article_read', [
