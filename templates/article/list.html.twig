@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Articles {% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                        <tr>
+                            <td><a href="{{ path('article_read', {'slug': article.title}) }}" target="_blank">{{ article.title }}</a></td>
+                            <td>{{ article.content }}</td>
+                            <td>{{ article.createdAt|date("d/m/Y") }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

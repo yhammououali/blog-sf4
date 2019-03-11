@@ -21,9 +21,16 @@ class ArticleController extends AbstractController
 //        return new Response('Article is coming very soon!');
 //    }
 
+    /**
+     * @Route("/article/list", name="article_list")
+     */
     public function list(ObjectManager $objectManager)
     {
         $articles = $objectManager->getRepository(Article::class)->findAll();
+
+        return $this->render('article/list.html.twig', [
+            'articles' => $articles,
+        ]);
     }
 
     /**
